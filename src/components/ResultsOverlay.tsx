@@ -13,7 +13,7 @@ type ResultsOverlayProps = {
 };
 
 function formatScore(score: number): string {
-  return score.toFixed(2);
+  return `${(score * 100).toFixed(2)}%`;
 }
 
 export function ResultsOverlay({
