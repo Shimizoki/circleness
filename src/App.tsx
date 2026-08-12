@@ -9,6 +9,7 @@ import { gradeAll, type GradeResult, type Point } from './grading';
 import {
   buildShapePoints,
   loadTestShapes,
+  toCanonicalDrawingInput,
   USER_SHAPE_ID,
   type ShapeSourceId,
   type TestShape,
@@ -66,12 +67,13 @@ function App() {
   }, [mode, points, resolveShapePoints, shapeSource, userPoints]);
 
   const drawingInput = useMemo(
-    () => ({
-      points: activePoints,
-      canvasWidth: size.width,
-      canvasHeight: size.height,
-      center: { x: size.width / 2, y: size.height / 2 },
-    }),
+    () =>
+      toCanonicalDrawingInput({
+        points: activePoints,
+        canvasWidth: size.width,
+        canvasHeight: size.height,
+        center: { x: size.width / 2, y: size.height / 2 },
+      }),
     [activePoints, size.height, size.width],
   );
 
@@ -81,12 +83,14 @@ function App() {
       const pts = resolveShapePoints(source, submittedUser);
       if (pts.length === 0) return;
 
-      const graded = gradeAll({
-        points: pts,
-        canvasWidth: size.width,
-        canvasHeight: size.height,
-        center: { x: size.width / 2, y: size.height / 2 },
-      });
+      const graded = gradeAll(
+        toCanonicalDrawingInput({
+          points: pts,
+          canvasWidth: size.width,
+          canvasHeight: size.height,
+          center: { x: size.width / 2, y: size.height / 2 },
+        }),
+      );
       setResults(graded);
       setSelectedGraderId((current) => current ?? graded[0]?.id ?? null);
       setShapeSource(source);

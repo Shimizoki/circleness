@@ -1,4 +1,4 @@
-import type { Point } from '../grading';
+import type { DrawingInput, Point } from '../grading';
 
 /** A shape in normalized coordinates: origin at (0, 0), max radius ≈ 1. */
 export type ShapeDocument = {
@@ -151,6 +151,26 @@ export function buildShapePoints(
   canvasHeight: number,
 ): Point[] {
   return placeShapeOnCanvas(shape.points, canvasWidth, canvasHeight);
+}
+
+/**
+ * Re-center on the crosshair and scale so max radius = 1, then place at the
+ * default canvas radius. Grades and overlays then share a common size whether
+ * the user drew a tiny or huge circle.
+ */
+export function toCanonicalDrawingInput(input: DrawingInput): DrawingInput {
+  const { points, canvasWidth, canvasHeight, center } = input;
+  if (points.length === 0 || canvasWidth <= 0 || canvasHeight <= 0) {
+    return input;
+  }
+
+  const normalized = toNormalizedShape(points, center).points;
+  return {
+    points: placeShapeOnCanvas(normalized, canvasWidth, canvasHeight),
+    canvasWidth,
+    canvasHeight,
+    center: { x: canvasWidth / 2, y: canvasHeight / 2 },
+  };
 }
 
 let shapesCache: TestShape[] | null = null;

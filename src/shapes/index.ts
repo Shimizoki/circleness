@@ -8,6 +8,7 @@ export {
   parseShapeText,
   placeShapeOnCanvas,
   serializeShape,
+  toCanonicalDrawingInput,
   toNormalizedShape,
   USER_SHAPE_ID,
   type ShapeDocument,
