@@ -1,0 +1,16 @@
+export {
+  buildShapePoints,
+  defaultShapeRadius,
+  getCachedTestShapes,
+  getTestShape,
+  loadTestShapes,
+  maxRadius,
+  parseShapeText,
+  placeShapeOnCanvas,
+  serializeShape,
+  toNormalizedShape,
+  USER_SHAPE_ID,
+  type ShapeDocument,
+  type ShapeSourceId,
+  type TestShape,
+} from './library';

@@ -1,0 +1,67 @@
+[
+  {
+    "id": "circle",
+    "label": "Circle",
+    "file": "circle.json"
+  },
+  {
+    "id": "square",
+    "label": "Square",
+    "file": "square.json"
+  },
+  {
+    "id": "star",
+    "label": "Star",
+    "file": "star.json"
+  },
+  {
+    "id": "oval",
+    "label": "Oval (1:2)",
+    "file": "oval.json"
+  },
+  {
+    "id": "venn-shell",
+    "label": "Venn shell",
+    "file": "venn-shell.json"
+  },
+  {
+    "id": "x-shell",
+    "label": "X shell",
+    "file": "x-shell.json"
+  },
+  {
+    "id": "semicircle",
+    "label": "Semicircle",
+    "file": "semicircle.json"
+  },
+  {
+    "id": "wedge",
+    "label": "Wedge (20%)",
+    "file": "wedge.json"
+  },
+  {
+    "id": "pie",
+    "label": "Pie (80%)",
+    "file": "pie.json"
+  },
+  {
+    "id": "right-isosceles",
+    "label": "Right isosceles",
+    "file": "right-isosceles.json"
+  },
+  {
+    "id": "stretched-octagon",
+    "label": "Stretched octagon",
+    "file": "stretched-octagon.json"
+  },
+  {
+    "id": "letter-c",
+    "label": "C",
+    "file": "letter-c.json"
+  },
+  {
+    "id": "parabola",
+    "label": "Parabola y=x²",
+    "file": "parabola.json"
+  }
+]
