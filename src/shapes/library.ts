@@ -156,8 +156,10 @@ export function buildShapePoints(
 let shapesCache: TestShape[] | null = null;
 let shapesPromise: Promise<TestShape[]> | null = null;
 
+const shapesBase = `${import.meta.env.BASE_URL}shapes/`;
+
 async function loadShapeFile(entry: ManifestEntry): Promise<TestShape> {
-  const res = await fetch(`/shapes/${entry.file}`);
+  const res = await fetch(`${shapesBase}${entry.file}`);
   if (!res.ok) {
     throw new Error(`Failed to load shape ${entry.file}: ${res.status}`);
   }
@@ -175,7 +177,7 @@ export async function loadTestShapes(): Promise<TestShape[]> {
   if (shapesPromise) return shapesPromise;
 
   shapesPromise = (async () => {
-    const res = await fetch('/shapes/index.json');
+    const res = await fetch(`${shapesBase}index.json`);
     if (!res.ok) {
       throw new Error(`Failed to load shape index: ${res.status}`);
     }
