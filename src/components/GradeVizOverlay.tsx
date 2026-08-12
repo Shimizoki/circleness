@@ -4,7 +4,7 @@ import {
   type DrawingInput,
   type Point,
 } from '../grading';
-import { CHART_HEIGHT } from '../grading/charts';
+import { chartHeightForPanel } from '../grading/charts';
 import {
   areaCentroid,
   distance,
@@ -230,14 +230,15 @@ export function GradeVizOverlay({ graderId, input }: GradeVizOverlayProps) {
       const grader = graderId ? getGrader(graderId) : undefined;
       const shift = grader?.visualizationShift?.(input) ?? { x: 0, y: 0 };
       const showChart = Boolean(grader?.drawChart);
-      const chartReserve = showChart ? CHART_HEIGHT : 0;
+      const chartReserve = showChart ? chartHeightForPanel(panelH) : 0;
+      const fitPad = panelH < 280 ? 20 : FIT_PADDING_PX;
 
       const bounds = contentBounds(graderId, input, shift);
       const contentW = Math.max(1, bounds.maxX - bounds.minX);
       const contentH = Math.max(1, bounds.maxY - bounds.minY);
 
-      const availW = Math.max(1, panelW - FIT_PADDING_PX * 2);
-      const availH = Math.max(1, panelH - chartReserve - FIT_PADDING_PX * 2);
+      const availW = Math.max(1, panelW - fitPad * 2);
+      const availH = Math.max(1, panelH - chartReserve - fitPad * 2);
       const scale = Math.min(availW / contentW, availH / contentH);
 
       const offsetX = (panelW - contentW * scale) / 2 - bounds.minX * scale;

@@ -49,9 +49,11 @@ export function DrawingCanvas({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pointsRef = useRef(points);
   const drawingRef = useRef(false);
+  const drawingEnabledRef = useRef(drawingEnabled);
   const sizeRef = useRef({ width: 0, height: 0 });
 
   pointsRef.current = points;
+  drawingEnabledRef.current = drawingEnabled;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -70,10 +72,21 @@ export function DrawingCanvas({
       if (!ctx) return;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
+      const prev = sizeRef.current;
+      const sizeChanged = prev.width !== width || prev.height !== height;
       sizeRef.current = { width, height };
       onSizeChange(width, height);
-      onPointsChange([]);
-      redraw(ctx, width, height, []);
+
+      // Canvas pixel coords are only valid for the current viewport. Clear the
+      // in-progress stroke when the size changes during draw mode — submitted
+      // shapes live in normalized unit space and are re-placed by App.
+      if (sizeChanged && drawingEnabledRef.current) {
+        drawingRef.current = false;
+        onPointsChange([]);
+        redraw(ctx, width, height, []);
+      } else {
+        redraw(ctx, width, height, pointsRef.current);
+      }
     };
 
     resize();

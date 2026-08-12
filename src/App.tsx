@@ -9,7 +9,9 @@ import { gradeAll, type GradeResult, type Point } from './grading';
 import {
   buildShapePoints,
   loadTestShapes,
+  placeShapeOnCanvas,
   toCanonicalDrawingInput,
+  toNormalizedShape,
   USER_SHAPE_ID,
   type ShapeSourceId,
   type TestShape,
@@ -21,6 +23,7 @@ type Mode = 'draw' | 'results';
 function App() {
   const [mode, setMode] = useState<Mode>('draw');
   const [points, setPoints] = useState<Point[]>([]);
+  /** Submitted stroke in unit space (origin at crosshair, max radius ≈ 1). */
   const [userPoints, setUserPoints] = useState<Point[]>([]);
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [results, setResults] = useState<GradeResult[]>([]);
@@ -53,9 +56,13 @@ function App() {
 
   const resolveShapePoints = useCallback(
     (source: ShapeSourceId, submittedUser: Point[]) => {
-      if (source === USER_SHAPE_ID) return submittedUser;
+      if (size.width === 0 || size.height === 0) return [];
+      if (source === USER_SHAPE_ID) {
+        if (submittedUser.length === 0) return [];
+        return placeShapeOnCanvas(submittedUser, size.width, size.height);
+      }
       const shape = testShapes.find((s) => s.id === source);
-      if (!shape || size.width === 0) return [];
+      if (!shape) return [];
       return buildShapePoints(shape, size.width, size.height);
     },
     [size.height, size.width, testShapes],
@@ -101,8 +108,10 @@ function App() {
 
   const handleSubmit = () => {
     if (points.length === 0 || size.width === 0) return;
-    setUserPoints(points);
-    runGrading(USER_SHAPE_ID, points);
+    const center = { x: size.width / 2, y: size.height / 2 };
+    const normalized = toNormalizedShape(points, center).points;
+    setUserPoints(normalized);
+    runGrading(USER_SHAPE_ID, normalized);
   };
 
   const handleTryAgain = () => {
@@ -115,7 +124,7 @@ function App() {
   };
 
   const handleSelectGrader = (id: string) => {
-    setSelectedGraderId((current) => (current === id ? null : id));
+    setSelectedGraderId((current) => current === id ? null : id);
   };
 
   const handleShapeSourceChange = (id: ShapeSourceId) => {

@@ -9,20 +9,29 @@ export type ChartSurface = {
   panelH: number;
 };
 
+/** Shrink the bottom chart on short (mobile) viz panes. */
+export function chartHeightForPanel(panelH: number): number {
+  if (panelH < 220) return Math.max(64, Math.floor(panelH * 0.38));
+  if (panelH < 320) return 88;
+  return CHART_HEIGHT;
+}
+
 /** Shared bottom panel chrome + title. Returns the drawable plot rect. */
 export function beginChartPanel(
   surface: ChartSurface,
   title: string,
 ): { left: number; right: number; top: number; bottom: number; chartTop: number } {
   const { ctx, panelW, panelH } = surface;
-  const chartTop = panelH - CHART_HEIGHT;
+  const chartH = chartHeightForPanel(panelH);
+  const chartTop = panelH - chartH;
   const left = CHART_PAD;
   const right = panelW - CHART_PAD;
-  const top = chartTop + 28;
-  const bottom = panelH - CHART_PAD;
+  const titleSpace = chartH < 80 ? 18 : 28;
+  const top = chartTop + titleSpace;
+  const bottom = panelH - Math.min(CHART_PAD, Math.max(6, chartH * 0.12));
 
   ctx.fillStyle = 'rgba(247, 244, 237, 0.92)';
-  ctx.fillRect(0, chartTop, panelW, CHART_HEIGHT);
+  ctx.fillRect(0, chartTop, panelW, chartH);
   ctx.strokeStyle = 'rgba(26, 26, 24, 0.12)';
   ctx.lineWidth = 1;
   ctx.beginPath();
@@ -31,8 +40,8 @@ export function beginChartPanel(
   ctx.stroke();
 
   ctx.fillStyle = 'rgba(26, 26, 24, 0.55)';
-  ctx.font = '12px "Source Sans 3", sans-serif';
-  ctx.fillText(title, left, chartTop + 18);
+  ctx.font = `${chartH < 80 ? 11 : 12}px "Source Sans 3", sans-serif`;
+  ctx.fillText(title, left, chartTop + (chartH < 80 ? 14 : 18));
 
   return { left, right, top, bottom, chartTop };
 }

@@ -24,6 +24,7 @@ body,
   margin: 0;
   width: 100%;
   height: 100%;
+  height: 100dvh;
   overflow: hidden;
 }
 
@@ -302,19 +303,26 @@ body {
   inset: 0;
   z-index: 4;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-areas: 'grades viz';
   animation: fade-in 280ms ease;
 }
 
 .results-chrome {
+  grid-area: grades;
   display: flex;
   align-items: stretch;
   justify-content: stretch;
   height: 100%;
   min-width: 0;
+  min-height: 0;
   padding: 1.25rem;
   background: rgba(26, 26, 24, 0.88);
   border-right: 1px solid rgba(247, 244, 237, 0.08);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .results-panel {
@@ -404,8 +412,10 @@ body {
 }
 
 .results-viz-pane {
+  grid-area: viz;
   position: relative;
   min-width: 0;
+  min-height: 0;
   height: 100%;
   background:
     radial-gradient(ellipse 100% 80% at 50% 45%, #f7f4ed 0%, var(--paper) 60%, var(--paper-deep) 100%);
@@ -421,24 +431,75 @@ body {
 }
 
 @media (max-width: 720px) {
+  .controls-overlay {
+    padding: 1rem 1rem calc(1.25rem + env(safe-area-inset-bottom, 0px));
+    gap: 1rem;
+  }
+
+  .brand-mark {
+    font-size: clamp(1.5rem, 7vw, 2rem);
+  }
+
+  .overlay-btn {
+    padding: 0.8rem 1.35rem;
+  }
+
+  .shape-io-scrim {
+    padding: 0.75rem;
+    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+    align-items: end;
+  }
+
+  .shape-io-dialog {
+    width: 100%;
+    max-height: min(92dvh, 100%);
+    overflow: auto;
+  }
+
+  .shape-io-textarea {
+    min-height: 10rem;
+  }
+
   .results-layout {
     grid-template-columns: 1fr;
-    grid-template-rows: minmax(0, 42%) minmax(0, 58%);
+    grid-template-rows: minmax(0, 34%) minmax(0, 66%);
+    grid-template-areas:
+      'viz'
+      'grades';
   }
 
   .results-chrome {
     border-right: none;
-    border-bottom: 1px solid rgba(247, 244, 237, 0.08);
-    padding: 1rem;
+    border-top: 1px solid rgba(247, 244, 237, 0.08);
+    padding: 0.9rem 1rem calc(1rem + env(safe-area-inset-bottom, 0px));
   }
 
   .results-panel {
     justify-content: flex-start;
     max-width: none;
+    gap: 0.75rem;
+  }
+
+  .results-brand {
+    font-size: clamp(1.45rem, 6vw, 1.85rem);
+  }
+
+  .results-hint {
+    font-size: 0.85rem;
+  }
+
+  .result-row {
+    padding: 0.85rem 0.9rem;
+    min-height: 2.85rem;
+  }
+
+  .result-score {
+    font-size: 1.2rem;
   }
 
   .try-again-btn {
-    align-self: center;
+    align-self: stretch;
+    margin-top: 0.15rem;
   }
 }
 
